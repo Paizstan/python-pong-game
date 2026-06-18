@@ -1,15 +1,16 @@
 import pygame
-from src.settings import BALL_SIZE, BALL_SPEED_X, BALL_SPEED_Y, SCREEN_WIDTH, SCREEN_HEIGHT
+from src.settings import BALL_SIZE, BALL_SPEED_X, BALL_SPEED_Y, SCREEN_WIDTH, SCREEN_HEIGHT, YELLOW
 
 
 class Ball:
-    def __init__(self) -> None:
+    def __init__(self, color: tuple = YELLOW) -> None:
         self.rect = pygame.Rect(
             SCREEN_WIDTH // 2 - BALL_SIZE // 2,
             SCREEN_HEIGHT // 2 - BALL_SIZE // 2,
             BALL_SIZE,
             BALL_SIZE,
         )
+        self.color = color
         self.reset()
 
     def reset(self) -> None:
@@ -25,7 +26,7 @@ class Ball:
             self.speed_y *= -1
 
     def draw(self, surface: pygame.Surface) -> None:
-        pygame.draw.ellipse(surface, (255, 255, 255), self.rect)
+        pygame.draw.ellipse(surface, self.color, self.rect)
 
     def collide_with_paddle(self, paddle_rect: pygame.Rect) -> None:
         if self.rect.colliderect(paddle_rect):

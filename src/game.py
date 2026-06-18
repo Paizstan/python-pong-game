@@ -7,8 +7,16 @@ from src.settings import (
     FPS,
     BLACK,
     WHITE,
+    DARK_BG,
+    LIGHT_BLUE,
+    ORANGE,
+    YELLOW,
+    DARK_GRAY,
     FONT,
+    TITLE_FONT,
     SCORE_FONT,
+    GAME_OVER_TITLE_FONT,
+    WINNER_FONT,
     WINNING_SCORE,
     PADDLE_WIDTH,
     PADDLE_HEIGHT,
@@ -25,9 +33,19 @@ class Game:
         pygame.display.set_caption("Pong Python Vibecoding")
         self.clock = pygame.time.Clock()
 
-        self.left_paddle = Paddle(20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2)
-        self.right_paddle = Paddle(SCREEN_WIDTH - PADDLE_WIDTH - 20, SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2)
-        self.ball = Ball()
+        # Paletas con colores personalizados
+        self.left_paddle = Paddle(
+            20, 
+            SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2,
+            LIGHT_BLUE
+        )
+        self.right_paddle = Paddle(
+            SCREEN_WIDTH - PADDLE_WIDTH - 20, 
+            SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2,
+            ORANGE
+        )
+        # Pelota con color amarillo
+        self.ball = Ball(YELLOW)
 
         self.left_score = 0
         self.right_score = 0
@@ -87,7 +105,7 @@ class Game:
             self.state = GAME_STATE_GAME_OVER
 
     def draw(self) -> None:
-        self.screen.fill(BLACK)
+        self.screen.fill(DARK_BG)
 
         if self.state == GAME_STATE_START:
             self.draw_start_screen()
@@ -97,6 +115,7 @@ class Game:
             self.right_paddle.draw(self.screen)
             self.ball.draw(self.screen)
             self.draw_score()
+            self.draw_title()
         elif self.state == GAME_STATE_GAME_OVER:
             self.draw_game_over_screen()
 
@@ -104,59 +123,90 @@ class Game:
 
     def draw_center_line(self) -> None:
         for i in range(10, SCREEN_HEIGHT, 40):
-            pygame.draw.rect(self.screen, WHITE, (SCREEN_WIDTH // 2 - 5, i, 10, 20))
+            pygame.draw.rect(self.screen, DARK_GRAY, (SCREEN_WIDTH // 2 - 5, i, 10, 20))
 
     def draw_score(self) -> None:
-        left_text = SCORE_FONT.render(str(self.left_score), True, WHITE)
-        right_text = SCORE_FONT.render(str(self.right_score), True, WHITE)
-        self.screen.blit(left_text, (SCREEN_WIDTH // 4 - left_text.get_width() // 2, 20))
-        self.screen.blit(right_text, (SCREEN_WIDTH * 3 // 4 - right_text.get_width() // 2, 20))
+        left_text = SCORE_FONT.render(str(self.left_score), True, LIGHT_BLUE)
+        right_text = SCORE_FONT.render(str(self.right_score), True, ORANGE)
+        self.screen.blit(left_text, (SCREEN_WIDTH // 4 - left_text.get_width() // 2, 10))
+        self.screen.blit(right_text, (SCREEN_WIDTH * 3 // 4 - right_text.get_width() // 2, 10))
+
+    def draw_title(self) -> None:
+        title = TITLE_FONT.render("Pong Python", True, WHITE)
+        self.screen.blit(
+            title,
+            (SCREEN_WIDTH // 2 - title.get_width() // 2, SCREEN_HEIGHT - 30),
+        )
 
     def draw_start_screen(self) -> None:
-        title = FONT.render("PONG PYTHON VIBECODING", True, WHITE)
+        title = GAME_OVER_TITLE_FONT.render("PONG PYTHON", True, WHITE)
+        subtitle = TITLE_FONT.render("Vibecoding Edition", True, LIGHT_BLUE)
         start = FONT.render("Presiona ESPACIO para comenzar", True, WHITE)
-        controls_1 = FONT.render("Jugador 1: W / S", True, WHITE)
-        controls_2 = FONT.render("Jugador 2: Flechas arriba / abajo", True, WHITE)
+        
+        controls_header = TITLE_FONT.render("Controles:", True, ORANGE)
+        controls_1 = FONT.render("Jugador 1 (Azul):   W / S", True, LIGHT_BLUE)
+        controls_2 = FONT.render("Jugador 2 (Naranja):   Flechas arriba / abajo", True, ORANGE)
 
         self.screen.blit(
             title,
-            (SCREEN_WIDTH // 2 - title.get_width() // 2, SCREEN_HEIGHT // 3),
+            (SCREEN_WIDTH // 2 - title.get_width() // 2, SCREEN_HEIGHT // 4 - 40),
+        )
+        self.screen.blit(
+            subtitle,
+            (SCREEN_WIDTH // 2 - subtitle.get_width() // 2, SCREEN_HEIGHT // 4 + 30),
         )
         self.screen.blit(
             start,
-            (SCREEN_WIDTH // 2 - start.get_width() // 2, SCREEN_HEIGHT // 3 + 60),
+            (SCREEN_WIDTH // 2 - start.get_width() // 2, SCREEN_HEIGHT // 2 - 20),
+        )
+        self.screen.blit(
+            controls_header,
+            (SCREEN_WIDTH // 2 - controls_header.get_width() // 2, SCREEN_HEIGHT // 2 + 50),
         )
         self.screen.blit(
             controls_1,
-            (SCREEN_WIDTH // 2 - controls_1.get_width() // 2, SCREEN_HEIGHT // 3 + 140),
+            (SCREEN_WIDTH // 2 - controls_1.get_width() // 2, SCREEN_HEIGHT // 2 + 90),
         )
         self.screen.blit(
             controls_2,
-            (SCREEN_WIDTH // 2 - controls_2.get_width() // 2, SCREEN_HEIGHT // 3 + 180),
+            (SCREEN_WIDTH // 2 - controls_2.get_width() // 2, SCREEN_HEIGHT // 2 + 130),
         )
 
     def draw_game_over_screen(self) -> None:
-        winner = "Jugador 1 gana" if self.left_score > self.right_score else "Jugador 2 gana"
-        title = FONT.render("GAME OVER", True, WHITE)
-        winner_text = FONT.render(winner, True, WHITE)
+        winner_number = 1 if self.left_score > self.right_score else 2
+        winner_color = LIGHT_BLUE if winner_number == 1 else ORANGE
+        
+        title = GAME_OVER_TITLE_FONT.render("GAME OVER", True, WHITE)
+        winner_text = WINNER_FONT.render(f"Jugador {winner_number} gana", True, winner_color)
+        
+        score_text = FONT.render(
+            f"Marcador Final: {self.left_score} - {self.right_score}", 
+            True, 
+            WHITE
+        )
+        
         retry = FONT.render("Presiona R para reiniciar", True, WHITE)
         quit_text = FONT.render("Presiona ESC para salir", True, WHITE)
 
         self.screen.blit(
             title,
-            (SCREEN_WIDTH // 2 - title.get_width() // 2, SCREEN_HEIGHT // 3),
+            (SCREEN_WIDTH // 2 - title.get_width() // 2, SCREEN_HEIGHT // 4),
         )
         self.screen.blit(
             winner_text,
-            (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 3 + 60),
+            (SCREEN_WIDTH // 2 - winner_text.get_width() // 2, SCREEN_HEIGHT // 4 + 80),
+        )
+        self.screen.blit(
+            score_text,
+            (SCREEN_WIDTH // 2 - score_text.get_width() // 2, SCREEN_HEIGHT // 4 + 140),
         )
         self.screen.blit(
             retry,
-            (SCREEN_WIDTH // 2 - retry.get_width() // 2, SCREEN_HEIGHT // 3 + 140),
+            (SCREEN_WIDTH // 2 - retry.get_width() // 2, SCREEN_HEIGHT // 2 + 60),
         )
         self.screen.blit(
             quit_text,
-            (SCREEN_WIDTH // 2 - quit_text.get_width() // 2, SCREEN_HEIGHT // 3 + 180),
+            (SCREEN_WIDTH // 2 - quit_text.get_width() // 2, SCREEN_HEIGHT // 2 + 100),
         )
 
     def reset_game(self) -> None:
