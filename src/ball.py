@@ -28,7 +28,7 @@ class Ball:
     def draw(self, surface: pygame.Surface) -> None:
         pygame.draw.ellipse(surface, self.color, self.rect)
 
-    def collide_with_paddle(self, paddle_rect: pygame.Rect) -> None:
+    def collide_with_paddle(self, paddle_rect: pygame.Rect) -> bool:
         if self.rect.colliderect(paddle_rect):
             should_bounce = (
                 self.speed_x < 0 and self.rect.centerx > paddle_rect.centerx
@@ -37,3 +37,5 @@ class Ball:
             )
             if should_bounce:
                 self.speed_x *= -1
+                return True
+        return False

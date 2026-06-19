@@ -23,6 +23,10 @@ from src.settings import (
     GAME_STATE_START,
     GAME_STATE_PLAYING,
     GAME_STATE_GAME_OVER,
+    PADDLE_HIT_SOUND,
+    SCORE_SOUND,
+    GAME_OVER_SOUND,
+    load_sound,
 )
 
 
@@ -51,6 +55,11 @@ class Game:
         self.right_score = 0
         self.state = GAME_STATE_START
         self.running = True
+        self.game_over_played = False
+
+        self.sound_paddle = load_sound(PADDLE_HIT_SOUND)
+        self.sound_score = load_sound(SCORE_SOUND)
+        self.sound_game_over = load_sound(GAME_OVER_SOUND)
 
     def run(self) -> None:
         while self.running:
@@ -90,18 +99,30 @@ class Game:
             return
 
         self.ball.move()
-        self.ball.collide_with_paddle(self.left_paddle.rect)
-        self.ball.collide_with_paddle(self.right_paddle.rect)
+        left_collision = self.ball.collide_with_paddle(self.left_paddle.rect)
+        right_collision = self.ball.collide_with_paddle(self.right_paddle.rect)
+
+        if left_collision or right_collision:
+            if self.sound_paddle:
+                self.sound_paddle.play()
 
         if self.ball.rect.left <= 0:
             self.right_score += 1
+            if self.sound_score:
+                self.sound_score.play()
             self.ball.reset()
 
         if self.ball.rect.right >= SCREEN_WIDTH:
             self.left_score += 1
+            if self.sound_score:
+                self.sound_score.play()
             self.ball.reset()
 
         if self.left_score >= WINNING_SCORE or self.right_score >= WINNING_SCORE:
+            if not self.game_over_played:
+                if self.sound_game_over:
+                    self.sound_game_over.play()
+                self.game_over_played = True
             self.state = GAME_STATE_GAME_OVER
 
     def draw(self) -> None:
@@ -216,3 +237,4 @@ class Game:
         self.right_paddle.rect.y = SCREEN_HEIGHT // 2 - PADDLE_HEIGHT // 2
         self.ball.reset()
         self.state = GAME_STATE_START
+        self.game_over_played = False
