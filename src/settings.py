@@ -1,5 +1,12 @@
 import pygame
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+SOUNDS_DIR = BASE_DIR / "assets" / "sounds"
+
+PADDLE_HIT_SOUND = SOUNDS_DIR / "paddle_hit.wav"
+SCORE_SOUND = SOUNDS_DIR / "score.wav"
+GAME_OVER_SOUND = SOUNDS_DIR / "game_over.wav"
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -25,6 +32,22 @@ LIGHT_BLUE = (100, 200, 255)  # Paleta izquierda
 ORANGE = (255, 165, 50)  # Paleta derecha
 YELLOW = (255, 255, 0)  # Pelota
 DARK_GRAY = (40, 50, 70)  # Línea central
+
+def load_sound(path: Path) -> pygame.mixer.Sound | None:
+    if not pygame.mixer.get_init():
+        try:
+            pygame.mixer.init()
+        except pygame.error:
+            return None
+
+    if not path.exists():
+        return None
+
+    try:
+        return pygame.mixer.Sound(str(path))
+    except pygame.error:
+        return None
+
 
 pygame.font.init()
 FONT = pygame.font.SysFont("Arial", 30, bold=False)
