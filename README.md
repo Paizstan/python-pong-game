@@ -31,10 +31,22 @@ Desarrollar un mini-juego funcional utilizando Python y Pygame, demostrando:
 
 ---
 
+## Requisitos Previos
+
+Antes de ejecutar el proyecto, asegúrese de tener instalado:
+
+* Python 3.12.x
+* pip
+* Git (opcional)
+
+> **Importante:** El proyecto fue probado utilizando Python 3.12 y Pygame 2.6.1. Versiones más recientes de Python pueden presentar problemas de compatibilidad con algunas dependencias.
+
+---
+
 ## Estructura del Proyecto
 
 ```text
-pong-python-vibecoding/
+python-pong-game/
 │
 ├── main.py
 ├── README.md
@@ -48,18 +60,39 @@ pong-python-vibecoding/
 │   ├── settings.py
 │   └── __init__.py
 │
-└── docs/
-    └── prompts.md
+├── docs/
+│   └── prompts.md
+│
+└── assets/
 ```
 
 ---
 
 ## Instalación
 
-Instalar las dependencias del proyecto:
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/Paizstan/python-pong-game.git
+cd python-pong-game
+```
+
+### 2. Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
+```
+
+### 3. Verificar la versión de Python
+
+```bash
+python --version
+```
+
+Resultado esperado:
+
+```text
+Python 3.12.x
 ```
 
 ---
@@ -129,19 +162,35 @@ python main.py
 * Cierre mediante la tecla ESC.
 * Pantalla de victoria al alcanzar el puntaje objetivo.
 
-### Error Encontrado
+### Errores Encontrados
 
-Durante la fase de pruebas apareció el siguiente error:
+#### Error 1
 
 ```text
 NameError: PADDLE_HEIGHT is not defined
 ```
 
-### Solución Aplicada
+**Causa:**
 
-Se identificó que la constante utilizada en `game.py` no estaba siendo importada correctamente desde `settings.py`.
+La constante utilizada en `game.py` no estaba siendo importada correctamente desde `settings.py`.
 
-Se corrigió la importación y el juego volvió a funcionar correctamente.
+**Solución:**
+
+Se corrigió la importación correspondiente y el juego volvió a funcionar correctamente.
+
+#### Error 2
+
+```text
+ModuleNotFoundError: No module named 'pygame'
+```
+
+**Causa:**
+
+La librería Pygame no estaba instalada en el entorno de ejecución utilizado para correr el proyecto.
+
+**Solución:**
+
+Se instalaron las dependencias definidas en `requirements.txt` y se verificó la compatibilidad de la versión de Python utilizada.
 
 ---
 
@@ -154,6 +203,7 @@ Durante el desarrollo se utilizó ChatGPT como asistente de programación para:
 * Corregir errores encontrados durante la ejecución.
 * Mejorar la experiencia del usuario.
 * Implementar nuevas funcionalidades.
+* Explicar conceptos y validar decisiones de implementación.
 
 La evidencia completa de los prompts utilizados se encuentra en:
 
@@ -178,6 +228,7 @@ Durante el proyecto logré comprender:
 * Uso de clases y programación orientada a objetos.
 * Detección de colisiones.
 * Organización modular de proyectos Python.
+* Importancia de validar dependencias y entornos de ejecución.
 
 Como mejora futura, me gustaría implementar:
 
@@ -190,7 +241,7 @@ Como mejora futura, me gustaría implementar:
 
 ## Autor
 
-Stanley Paiz
+**Stanley Paiz**
 
 Proyecto desarrollado para la actividad:
 
